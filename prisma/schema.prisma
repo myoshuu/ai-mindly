@@ -11,3 +11,166 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum Role {
+  PATIENT
+  NURSE
+  ADMIN
+}
+
+enum Gender {
+  MAN
+  WOMAN
+}
+
+enum QuestionCategory {
+  ANXIETY
+  STRESS
+  PHYSICAL
+  IMPACT
+}
+
+enum SymptomType {
+  MAJOR
+  MINOR
+  CAUSE
+  IMPACT
+}
+
+enum ScreeningStatus {
+  DRAFT
+  SUBMITTED
+  AI_ANALYZED
+  VALIDATED
+  COMPLETED
+}
+
+enum RiskLevel {
+  LOW
+  MODERATE
+  HIGH
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  role     Role
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patients         Patient[]
+  nurseValidations NurseValidation[]
+}
+
+model Patient {
+  id               String   @id @default(cuid())
+  nik              String
+  fullName         String
+  gender           Gender
+  birthDate        DateTime
+  phone            String
+  address          String
+  emergencyContact String?
+
+  screenings Screening[]
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Question {
+  id          Int              @id
+  question    String
+  category    QuestionCategory
+  symptomType SymptomType
+  order       Int
+
+  answers ScreeningAnswer[]
+}
+
+model Screening {
+  id String @id @default(cuid())
+
+  status     ScreeningStatus
+  answers    ScreeningAnswer[]
+  ai         AIAnalysis?
+  validation NurseValidation?
+
+  createdAt DateTime @default(now())
+
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+}
+
+model ScreeningAnswer {
+  id    String @id @default(cuid())
+  score Int
+
+  screeningId String
+  questionId  Int
+  screening   Screening @relation(fields: [screeningId], references: [id])
+  question    Question  @relation(fields: [questionId], references: [id])
+}
+
+model AIAnalysis {
+  id              String    @id @default(cuid())
+  totalScore      Int
+  confidence      Float
+  riskLevel       RiskLevel
+  summary         String
+  reasoning       String
+  majorSymptoms   Json
+  minorSymptoms   Json
+  possibleCauses  Json
+  recommendations Json
+
+  createdAt DateTime @default(now())
+
+  screeningId String    @unique
+  screening   Screening @relation(fields: [screeningId], references: [id])
+}
+
+model NurseValidation {
+  id          String   @id @default(cuid())
+  approved    Boolean
+  notes       String?
+  validatedAt DateTime @default(now())
+
+  screeningId String    @unique
+  nurseId     String
+  screening   Screening @relation(fields: [screeningId], references: [id])
+  nurse       User      @relation(fields: [nurseId], references: [id])
+}
+
+//  SDKI
+model Diagnosis {
+  id           String @id @default(cuid())
+  screeeningId String
+  code         String
+  title        String
+  description  String
+}
+
+// SLKI
+model Outcome {
+  id          String @id @default(cuid())
+  diangosisId String
+  title       String
+  target      String
+}
+
+// SIKI
+model Intervention {
+  id          String @id @default(cuid())
+  diagnosisId String
+  title       String
+  action      String
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  screeningId String
+  generatedAt DateTime
+}
