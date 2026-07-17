@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: .
+      target: runner
+    container_name: ai-mindly-prod
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://admin:admin@postgres:5432/ai_mindly
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - shared-net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ai-mindly-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ai_mindly
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d ai_mindly"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - shared-net
+
+volumes:
+  postgres_data:
+
+networks:
+  shared-net:
+    driver: bridge
