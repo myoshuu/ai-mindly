@@ -27,7 +27,7 @@ RUN bunx prisma generate
 # Build Next.js
 # ENV NEXT_TELEMETRY_DISABLED=1
 # A placeholder DB URL so static generation doesn't fail during build time
-ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+# ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 RUN bun run build
 
 # ----------------------
