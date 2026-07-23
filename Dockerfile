@@ -1,7 +1,7 @@
 # ----------------------
 # 1. Base setup
 # ----------------------
-FROM oven/bun:latest AS base
+FROM oven/bun:debian AS base
 WORKDIR /app
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
