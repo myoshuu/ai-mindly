@@ -10,6 +10,7 @@ services:
       DATABASE_URL: postgresql://admin:admin@postgres:5432/ai_mindly
       NODE_ENV: production
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL}
     depends_on:
       postgres:
         condition: service_healthy

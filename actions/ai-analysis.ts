@@ -7,17 +7,27 @@ import { analyzeScreeningSchema, z } from "@/lib/zod";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || "",
+  baseURL: process.env.ANTHROPIC_BASE_URL || undefined,
 });
 
 // Instrument-specific thresholds and info
-const instrumentConfig: Record<string, {
-  label: string;
-  thresholds: { minimal: number; mild: number; moderate: number; severe: number };
-  description: string;
-}> = {
+const instrumentConfig: Record<
+  string,
+  {
+    label: string;
+    thresholds: {
+      minimal: number;
+      mild: number;
+      moderate: number;
+      severe: number;
+    };
+    description: string;
+  }
+> = {
   GAD7: {
     label: "GAD-7",
-    description: "Generalized Anxiety Disorder - 7 pertanyaan tentang kecemasan",
+    description:
+      "Generalized Anxiety Disorder - 7 pertanyaan tentang kecemasan",
     thresholds: { minimal: 4, mild: 9, moderate: 14, severe: 21 },
   },
   PHQ9: {
@@ -46,7 +56,7 @@ function getRiskLevel(instrument: string, score: number): string {
 }
 
 export const analyzeScreening = async (
-  input: z.infer<typeof analyzeScreeningSchema>
+  input: z.infer<typeof analyzeScreeningSchema>,
 ): Promise<{ error?: string; success?: boolean }> => {
   // Validate input with Zod
   const validation = analyzeScreeningSchema.safeParse(input);
@@ -79,17 +89,24 @@ export const analyzeScreening = async (
 
     // Filter answers to only include the selected instrument's questions
     const relevantAnswers = screening.answers.filter(
-      (a: { question: { instrument: string } }) => a.question.instrument === instrument
+      (a: { question: { instrument: string } }) =>
+        a.question.instrument === instrument,
     );
 
     // Build prompt for Claude - only include relevant questions
     const answersText = relevantAnswers
-      .map((a: { question: { order: number; text: string; instrument: string }; score: number }) =>
-        `Q${a.question.order}: ${a.question.text}\nJawaban: ${a.score}`
+      .map(
+        (a: {
+          question: { order: number; text: string; instrument: string };
+          score: number;
+        }) => `Q${a.question.order}: ${a.question.text}\nJawaban: ${a.score}`,
       )
       .join("\n\n");
 
-    const totalScore = relevantAnswers.reduce((sum: number, a: { score: number }) => sum + a.score, 0);
+    const totalScore = relevantAnswers.reduce(
+      (sum: number, a: { score: number }) => sum + a.score,
+      0,
+    );
     const riskLevel = getRiskLevel(instrument, totalScore);
 
     const prompt = `Anda adalah asisten AI untuk analisis skrining kesehatan mental.
@@ -130,14 +147,14 @@ Gunakan Bahasa Indonesia untuk hasil analisis. Fokuskan rekomendasi pada ${confi
       messages: [{ role: "user", content: prompt }],
     });
 
-    console.log("CLAUDE MESSAGE CONTENT OBJECT:", JSON.stringify(message.content, null, 2));
-    
+    console.log("CLAUDE MESSAGE CONTENT:", JSON.stringify(message.content, null, 2));
+
     // Find text in content blocks
     let responseText = "";
     if (message.content && Array.isArray(message.content)) {
-      const textBlock = message.content.find(block => block.type === "text");
+      const textBlock = message.content.find((block: { type: string }) => block.type === "text");
       if (textBlock && "text" in textBlock) {
-        responseText = textBlock.text;
+        responseText = (textBlock as { type: "text"; text: string }).text;
       }
     }
 
@@ -148,7 +165,9 @@ Gunakan Bahasa Indonesia untuk hasil analisis. Fokuskan rekomendasi pada ${confi
       let jsonStr: string | undefined;
 
       // Strategy 1: Extract from markdown code blocks
-      const codeBlockMatch = responseText.match(/```(?:json)?\n?([\s\S]*?)\n?```/);
+      const codeBlockMatch = responseText.match(
+        /```(?:json)?\n?([\s\S]*?)\n?```/,
+      );
       if (codeBlockMatch) {
         jsonStr = codeBlockMatch[1].trim();
       }
@@ -176,7 +195,9 @@ Gunakan Bahasa Indonesia untuk hasil analisis. Fokuskan rekomendasi pada ${confi
       }
 
       if (!jsonStr) {
-        console.error("RAW CLAUDE RESPONSE (NO JSON FOUND): [" + responseText + "]");
+        console.error(
+          "RAW CLAUDE RESPONSE (NO JSON FOUND): [" + responseText + "]",
+        );
         throw new Error("No JSON found");
       }
 
@@ -196,7 +217,8 @@ Gunakan Bahasa Indonesia untuk hasil analisis. Fokuskan rekomendasi pada ${confi
         riskLevel: fallbackRiskLevel,
         category: `${config.label} - Skor Total: ${totalScore}`,
         summary: "Analisis selesai dengan metode sederhana",
-        reasoning: "Gunakan metode penilaian sederhana karena terjadi kesalahan parsing",
+        reasoning:
+          "Gunakan metode penilaian sederhana karena terjadi kesalahan parsing",
         majorSymptoms: [],
         minorSymptoms: [],
         possibleCauses: [],
@@ -207,9 +229,12 @@ Gunakan Bahasa Indonesia untuk hasil analisis. Fokuskan rekomendasi pada ${confi
 
     // Sanitize and validate riskLevel to match Prisma RiskLevel enum:
     // enum RiskLevel { NONE, MINIMAL, MILD, MODERATE, SEVERE, HIGH }
-    let sanitizedRiskLevel: "NONE" | "MINIMAL" | "MILD" | "MODERATE" | "SEVERE" | "HIGH" = "NONE";
-    const rawRisk = String(analysisData.riskLevel).toUpperCase().replace(/\s+|-/g, "_");
-    
+    let sanitizedRiskLevel:
+      "NONE" | "MINIMAL" | "MILD" | "MODERATE" | "SEVERE" | "HIGH" = "NONE";
+    const rawRisk = String(analysisData.riskLevel)
+      .toUpperCase()
+      .replace(/\s+|-/g, "_");
+
     if (["HIGH", "SEVERE"].includes(rawRisk) || rawRisk.includes("SEVERE")) {
       sanitizedRiskLevel = "SEVERE";
     } else if (rawRisk.includes("MODERATE")) {
@@ -269,7 +294,6 @@ Gunakan Bahasa Indonesia untuk hasil analisis. Fokuskan rekomendasi pada ${confi
     revalidatePath("/dashboard");
 
     return { success: true };
-
   } catch (error) {
     console.error("Error analyzing screening:", error);
     return { error: "Gagal menganalisis skrining. Silakan coba lagi." };

@@ -1,7 +1,7 @@
 # ----------------------
 # 1. Base setup
 # ----------------------
-FROM oven/bun:debian AS base
+FROM oven/bun:latest AS base
 WORKDIR /app
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
@@ -18,8 +18,10 @@ RUN bun install --frozen-lockfile
 FROM base AS builder
 ARG DATABASE_URL
 ARG ANTHROPIC_API_KEY
+ARG ANTHROPIC_BASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 ENV ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
+ENV ANTHROPIC_BASE_URL=$ANTHROPIC_BASE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -35,8 +37,10 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ARG DATABASE_URL
 ARG ANTHROPIC_API_KEY
+ARG ANTHROPIC_BASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 ENV ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
+ENV ANTHROPIC_BASE_URL=$ANTHROPIC_BASE_URL
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next/standalone ./
