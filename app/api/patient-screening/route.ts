@@ -8,7 +8,7 @@ const SESSION_COOKIE_NAME = "session_id";
 
 const patientScreeningSchema = z.object({
   instrument: z.enum(["GAD7", "PHQ9", "SRQ20"], {
-    errorMap: () => ({ message: "Jenis skrining diperlukan" }),
+    message: "Jenis skrining diperlukan",
   }),
   answers: z
     .array(
