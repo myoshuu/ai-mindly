@@ -13,10 +13,10 @@ async function main() {
   // Create admin user
   const adminPassword = await hash("admin123", 12);
   const admin = await prisma.user.upsert({
-    where: { email: "admin@ratival.com" },
+    where: { email: "admin@gmail.com" },
     update: {},
     create: {
-      email: "admin@ratival.com",
+      email: "admin@gmail.com",
       password: adminPassword,
       fullName: "Administrator",
       role: "ADMIN",
@@ -27,10 +27,10 @@ async function main() {
   // Create nurse user
   const nursePassword = await hash("nurse123", 12);
   const nurse = await prisma.user.upsert({
-    where: { email: "perawat@ratival.com" },
+    where: { email: "perawat@gmail.com" },
     update: {},
     create: {
-      email: "perawat@ratival.com",
+      email: "perawat@gmail.com",
       password: nursePassword,
       fullName: "dr. Susi Handayani, S.Kep",
       role: "NURSE",
@@ -42,10 +42,10 @@ async function main() {
   // Create sample patient
   const patientPassword = await hash("patient123", 12);
   const patientUser = await prisma.user.upsert({
-    where: { email: "pasien@ratival.com" },
+    where: { email: "pasien@gmail.com" },
     update: {},
     create: {
-      email: "pasien@ratival.com",
+      email: "pasien@gmail.com",
       password: patientPassword,
       fullName: "Ahmad Fauzi",
       role: "PATIENT",
@@ -414,7 +414,8 @@ async function main() {
       title: "Gangguan Citra Tubuh",
       category: "PSIKOLOGIS",
       subcategory: "Integritas Ego",
-      definition: "Perubahan persepsi tentang penampilan, struktur, dan fungsi fisik individu",
+      definition:
+        "Perubahan persepsi tentang penampilan, struktur, dan fungsi fisik individu",
       causes: JSON.stringify([
         "Perubahan struktur/ bentuk tubuh (mis. amputasi, trauma, luka bakar, obesitas, jerawat)",
         "Perubahan fungsi tubuh (mis. proses penyakit, kehamilan, kelumpuhan)",
@@ -425,8 +426,15 @@ async function main() {
         "Efek tindakan/pengobatan (mis. pembedahan, kemoterapi, terapi radiasi)",
       ]),
       clinicalConditions: JSON.stringify([
-        "Mastektomi", "Amputasi", "Jerawat", "Parut atau luka bakar yang terlihat", "Obesitas",
-        "Hiperpigmentasi pada kehamilan", "Gangguan psikiatrik", "Program terapi neoplasma", "Alopecia chemically induced"
+        "Mastektomi",
+        "Amputasi",
+        "Jerawat",
+        "Parut atau luka bakar yang terlihat",
+        "Obesitas",
+        "Hiperpigmentasi pada kehamilan",
+        "Gangguan psikiatrik",
+        "Program terapi neoplasma",
+        "Alopecia chemically induced",
       ]),
       references: JSON.stringify([
         "PPNI (2016). Standar Diagnosis Keperawatan Indonesia: Definisi dan Indikator Diagnostik, Edisi 1. Jakarta: DPP PPNI.",
@@ -436,14 +444,47 @@ async function main() {
 
   // Symptoms for Gangguan Citra Tubuh
   const citraTubuhSymptoms = [
-    { type: "MAJOR", subjective: "Mengungkapkan kecacatan/ kehilangan bagian tubuh", objective: "Kehilangan bagian tubuh" },
-    { type: "MAJOR", subjective: "Tidak mau mengungkapkan kecacatan/ kehilangan bagian tubuh", objective: "Fungsi/ struktur tubuh berubah/ hilang" },
-    { type: "MINOR", subjective: "Mengungkapkan perasaan negatif tentang perubahan tubuh", objective: "Mengungkapkan perubahan gaya hidup" },
-    { type: "MINOR", subjective: "Mengungkapkan kekhawatiran pada penolakan/ reaksi orang lain", objective: "Menyembunyikan/ menunjukkan bagian tubuh secara berlebihan" },
-    { type: "MINOR", subjective: "", objective: "Menghindari melihat dan/ atau menyentuh bagian tubuh" },
-    { type: "MINOR", subjective: "", objective: "Fokus berlebihan pada perubahan tubuh" },
-    { type: "MINOR", subjective: "", objective: "Respon nonverbal pada perubahan dan persepsi tubuh" },
-    { type: "MINOR", subjective: "", objective: "Fokus pada penampilan dan kekuatan masa lalu" },
+    {
+      type: "MAJOR",
+      subjective: "Mengungkapkan kecacatan/ kehilangan bagian tubuh",
+      objective: "Kehilangan bagian tubuh",
+    },
+    {
+      type: "MAJOR",
+      subjective: "Tidak mau mengungkapkan kecacatan/ kehilangan bagian tubuh",
+      objective: "Fungsi/ struktur tubuh berubah/ hilang",
+    },
+    {
+      type: "MINOR",
+      subjective: "Mengungkapkan perasaan negatif tentang perubahan tubuh",
+      objective: "Mengungkapkan perubahan gaya hidup",
+    },
+    {
+      type: "MINOR",
+      subjective:
+        "Mengungkapkan kekhawatiran pada penolakan/ reaksi orang lain",
+      objective: "Menyembunyikan/ menunjukkan bagian tubuh secara berlebihan",
+    },
+    {
+      type: "MINOR",
+      subjective: "",
+      objective: "Menghindari melihat dan/ atau menyentuh bagian tubuh",
+    },
+    {
+      type: "MINOR",
+      subjective: "",
+      objective: "Fokus berlebihan pada perubahan tubuh",
+    },
+    {
+      type: "MINOR",
+      subjective: "",
+      objective: "Respon nonverbal pada perubahan dan persepsi tubuh",
+    },
+    {
+      type: "MINOR",
+      subjective: "",
+      objective: "Fokus pada penampilan dan kekuatan masa lalu",
+    },
     { type: "MINOR", subjective: "", objective: "Hubungan sosial berubah" },
   ];
 
@@ -467,7 +508,8 @@ async function main() {
       code: "SLKI-001",
       title: "Citra Tubuh",
       diagnosisId: diagnosis1.id,
-      definition: "Persepsi tentang penampilan, struktur, dan fungsi fisik individu",
+      definition:
+        "Persepsi tentang penampilan, struktur, dan fungsi fisik individu",
       expectation: "MEMBAIK",
       references: JSON.stringify([
         "PPNI (2018). Standar Luaran Keperawatan Indonesia: Definisi dan Kriteria Hasil Keperawatan, Edisi 1. Jakarta: DPP PPNI.",
@@ -476,20 +518,132 @@ async function main() {
   });
 
   const outcome1Criteria = [
-    { indicator: "Verbalisasi perasaan negatif tentang perubahan tubuh", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Verbalisasi kekhawatiran pada penolakan/ reaksi orang lain", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Verbalisasi perubahan gaya hidup", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Menyembunyikan bagian tubuh berlebihan", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Menunjukan bagian tubuh berlebihan", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Fokus pada bagian tubuh", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Fokus pada penampilan masa lalu", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Fokus pada kekuatan masa lalu", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Melihat bagian tubuh", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Menyentuh bagian tubuh", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Verbalisasi kecacatan bagian tubuh", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Verbalisasi kehilangan bagian tubuh", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Respon nonverbal pada perubahan tubuh", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Hubungan sosial", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
+    {
+      indicator: "Verbalisasi perasaan negatif tentang perubahan tubuh",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Verbalisasi kekhawatiran pada penolakan/ reaksi orang lain",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Verbalisasi perubahan gaya hidup",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Menyembunyikan bagian tubuh berlebihan",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Menunjukan bagian tubuh berlebihan",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Fokus pada bagian tubuh",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Fokus pada penampilan masa lalu",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Fokus pada kekuatan masa lalu",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Melihat bagian tubuh",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Menyentuh bagian tubuh",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Verbalisasi kecacatan bagian tubuh",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Verbalisasi kehilangan bagian tubuh",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Respon nonverbal pada perubahan tubuh",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Hubungan sosial",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
   ];
 
   for (let i = 0; i < outcome1Criteria.length; i++) {
@@ -506,7 +660,8 @@ async function main() {
       code: "SIKI-001",
       title: "Promosi Citra Tubuh",
       diagnosisId: diagnosis1.id,
-      definition: "Meningkatkan perbaikan perubahan persepsi terhadap fisik pasien",
+      definition:
+        "Meningkatkan perbaikan perubahan persepsi terhadap fisik pasien",
       references: JSON.stringify([
         "PPNI (2018). Standar Intervensi Keperawatan Indonesia: Definisi dan Tindakan Keperawatan, Edisi 1. Jakarta: DPP PPNI.",
       ]),
@@ -514,32 +669,90 @@ async function main() {
   });
 
   const intervention1Actions = [
-    { type: "OBSERVATION", action: "Identifikasi harapan citra tubuh berdasarkan tahap perkembangan" },
-    { type: "OBSERVATION", action: "Identifikasi budaya, agama, jenis kelamin, dan umur terkait citra tubuh" },
-    { type: "OBSERVATION", action: "Identifikasi perubahan citra tubuh yang mengakibatkan isolasi sosial" },
-    { type: "OBSERVATION", action: "Monitor frekuensi pernyataan kritik terhadap diri sendiri" },
-    { type: "OBSERVATION", action: "Monitor apakah pasien bisa melihat bagian tubuh yang berubah" },
+    {
+      type: "OBSERVATION",
+      action: "Identifikasi harapan citra tubuh berdasarkan tahap perkembangan",
+    },
+    {
+      type: "OBSERVATION",
+      action:
+        "Identifikasi budaya, agama, jenis kelamin, dan umur terkait citra tubuh",
+    },
+    {
+      type: "OBSERVATION",
+      action:
+        "Identifikasi perubahan citra tubuh yang mengakibatkan isolasi sosial",
+    },
+    {
+      type: "OBSERVATION",
+      action: "Monitor frekuensi pernyataan kritik terhadap diri sendiri",
+    },
+    {
+      type: "OBSERVATION",
+      action: "Monitor apakah pasien bisa melihat bagian tubuh yang berubah",
+    },
     { type: "THERAPEUTIC", action: "Diskusikan perubahan tubuh dan fungsinya" },
-    { type: "THERAPEUTIC", action: "Diskusikan perbedaan penampilan fisik terhadap harga diri" },
-    { type: "THERAPEUTIC", action: "Diskusikan perubahan akibat pubertas, kehamilan dan penuaan" },
-    { type: "THERAPEUTIC", action: "Diskusikan kondisi stress yang mempengaruhi citra tubuh (mis. luka penyakit, pembedahan)" },
-    { type: "THERAPEUTIC", action: "Diskusikan cara mengembangkan harapan citra tubuh secara realistis" },
-    { type: "THERAPEUTIC", action: "Diskusikan persepsi pasien dan keluarga tentang perubahan citra tubuh" },
-    { type: "EDUCATION", action: "Jelaskan kepada keluarga tentang perawatan perubahan citra tubuh" },
-    { type: "EDUCATION", action: "Anjurkan mengungkapkan gambaran diri terhadap citra tubuh" },
-    { type: "EDUCATION", action: "Anjurkan menggunakan alat bantu (mis. pakaian, wig, kosmetik)" },
-    { type: "EDUCATION", action: "Anjurkan mengikuti kelompok pendukung (mis. kelompok sebaya)" },
+    {
+      type: "THERAPEUTIC",
+      action: "Diskusikan perbedaan penampilan fisik terhadap harga diri",
+    },
+    {
+      type: "THERAPEUTIC",
+      action: "Diskusikan perubahan akibat pubertas, kehamilan dan penuaan",
+    },
+    {
+      type: "THERAPEUTIC",
+      action:
+        "Diskusikan kondisi stress yang mempengaruhi citra tubuh (mis. luka penyakit, pembedahan)",
+    },
+    {
+      type: "THERAPEUTIC",
+      action:
+        "Diskusikan cara mengembangkan harapan citra tubuh secara realistis",
+    },
+    {
+      type: "THERAPEUTIC",
+      action:
+        "Diskusikan persepsi pasien dan keluarga tentang perubahan citra tubuh",
+    },
+    {
+      type: "EDUCATION",
+      action:
+        "Jelaskan kepada keluarga tentang perawatan perubahan citra tubuh",
+    },
+    {
+      type: "EDUCATION",
+      action: "Anjurkan mengungkapkan gambaran diri terhadap citra tubuh",
+    },
+    {
+      type: "EDUCATION",
+      action: "Anjurkan menggunakan alat bantu (mis. pakaian, wig, kosmetik)",
+    },
+    {
+      type: "EDUCATION",
+      action: "Anjurkan mengikuti kelompok pendukung (mis. kelompok sebaya)",
+    },
     { type: "EDUCATION", action: "Latih fungsi tubuh yang dimiliki" },
-    { type: "EDUCATION", action: "Latih peningkatan penampilan diri (mis. berdandan)" },
-    { type: "EDUCATION", action: "Latih pengungkapan kemampuan diri kepada orang lain maupun kelompok" },
+    {
+      type: "EDUCATION",
+      action: "Latih peningkatan penampilan diri (mis. berdandan)",
+    },
+    {
+      type: "EDUCATION",
+      action:
+        "Latih pengungkapan kemampuan diri kepada orang lain maupun kelompok",
+    },
   ];
 
   for (let i = 0; i < intervention1Actions.length; i++) {
     await prisma.interventionAction.create({
-      data: { ...intervention1Actions[i], interventionId: intervention1.id, order: i },
+      data: {
+        ...intervention1Actions[i],
+        interventionId: intervention1.id,
+        order: i,
+      },
     });
   }
-
 
   // Diagnosis 2: Gangguan Persepsi Sensori
   console.log("Seeding Gangguan Persepsi Sensori...");
@@ -551,16 +764,32 @@ async function main() {
       title: "Gangguan Persepsi Sensori",
       category: "PSIKOLOGIS",
       subcategory: "Integritas Ego",
-      definition: "Perubahan persepsi terhadap stimulus baik internal maupun eksternal yang disertai dengan respon yang berkurang, berlebihan atau terdistorsi",
+      definition:
+        "Perubahan persepsi terhadap stimulus baik internal maupun eksternal yang disertai dengan respon yang berkurang, berlebihan atau terdistorsi",
       causes: JSON.stringify([
-        "Gangguan penglihatan", "Gangguan pendengaran", "Gangguan penciuman", "Gangguan perabaan",
-        "Hipoksia serebral", "Penyalahgunaan zat", "Usia lanjut", "Pemajanan toksin lingkungan"
+        "Gangguan penglihatan",
+        "Gangguan pendengaran",
+        "Gangguan penciuman",
+        "Gangguan perabaan",
+        "Hipoksia serebral",
+        "Penyalahgunaan zat",
+        "Usia lanjut",
+        "Pemajanan toksin lingkungan",
       ]),
       clinicalConditions: JSON.stringify([
-        "Glaukoma", "Katarak", "Gangguan refraksi (myopia, hiperopia, astigmatisma, presbiopia)", "Trauma okuler",
+        "Glaukoma",
+        "Katarak",
+        "Gangguan refraksi (myopia, hiperopia, astigmatisma, presbiopia)",
+        "Trauma okuler",
         "Trauma pada saraf kranialis II, III, IV, dan VI akibat stroke, aneurisma intrakranial, trauma/ tumor otak",
-        "Infeksi okuler", "Presbiakusis", "Malfungsi alat bantu dengar", "Delirium", "Demensia", "Gangguan amnestik",
-        "Penyakit terminal", "Gangguan psikotik"
+        "Infeksi okuler",
+        "Presbiakusis",
+        "Malfungsi alat bantu dengar",
+        "Delirium",
+        "Demensia",
+        "Gangguan amnestik",
+        "Penyakit terminal",
+        "Gangguan psikotik",
       ]),
       references: JSON.stringify([
         "PPNI (2016). Standar Diagnosis Keperawatan Indonesia: Definisi dan Indikator Diagnostik, Edisi 1. Jakarta: DPP PPNI.",
@@ -569,14 +798,37 @@ async function main() {
   });
 
   const sensoriSymptoms = [
-    { type: "MAJOR", subjective: "Mendengar suara bisikan atau melihat bayangan", objective: "Distorsi sensori" },
-    { type: "MAJOR", subjective: "Merasakan sesuatu melalui indera perabaan, Penciuman, pengelihatan, atau Pengecapan", objective: "Respon tidak sesuai" },
-    { type: "MAJOR", subjective: "Respon tidak sesuai", objective: "Bersikap seolah melihat, mendengar, mengecap, meraba atau mencium sesuatu" },
-    { type: "MAJOR", subjective: "Bersikap seolah melihat, mendengar, mengecap, meraba atau mencium sesuatu", objective: "" },
+    {
+      type: "MAJOR",
+      subjective: "Mendengar suara bisikan atau melihat bayangan",
+      objective: "Distorsi sensori",
+    },
+    {
+      type: "MAJOR",
+      subjective:
+        "Merasakan sesuatu melalui indera perabaan, Penciuman, pengelihatan, atau Pengecapan",
+      objective: "Respon tidak sesuai",
+    },
+    {
+      type: "MAJOR",
+      subjective: "Respon tidak sesuai",
+      objective:
+        "Bersikap seolah melihat, mendengar, mengecap, meraba atau mencium sesuatu",
+    },
+    {
+      type: "MAJOR",
+      subjective:
+        "Bersikap seolah melihat, mendengar, mengecap, meraba atau mencium sesuatu",
+      objective: "",
+    },
     { type: "MINOR", subjective: "Menyatakan kesal", objective: "Menyendiri" },
     { type: "MINOR", subjective: "", objective: "Melamun" },
     { type: "MINOR", subjective: "", objective: "Konsentrasi buruk" },
-    { type: "MINOR", subjective: "", objective: "Disorientasi waktu, tempat, orang dan situasi" },
+    {
+      type: "MINOR",
+      subjective: "",
+      objective: "Disorientasi waktu, tempat, orang dan situasi",
+    },
     { type: "MINOR", subjective: "", objective: "Curiga" },
     { type: "MINOR", subjective: "", objective: "Melihat ke satu arah" },
     { type: "MINOR", subjective: "", objective: "Mondar mandir" },
@@ -603,7 +855,8 @@ async function main() {
       code: "SLKI-002",
       title: "Persepsi Sensori",
       diagnosisId: diagnosis2.id,
-      definition: "Persepsi realistis terhadap stimulus baik internal maupun eksternal",
+      definition:
+        "Persepsi realistis terhadap stimulus baik internal maupun eksternal",
       expectation: "MEMBAIK",
       references: JSON.stringify([
         "PPNI (2018). Standar Luaran Keperawatan Indonesia: Definisi dan Kriteria Hasil Keperawatan, Edisi 1. Jakarta: DPP PPNI.",
@@ -612,20 +865,132 @@ async function main() {
   });
 
   const outcome2Criteria = [
-    { indicator: "Verbalisasi mendengar bisikan", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Verbalisasi melihat bayangan", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Verbalisasi merasakan sesuatu melalui indra perabaan", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Verbalisasi merasakan sesuatu melalui indra penciuman", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Verbalisasi merasakan sesuatu melalui indra pengecapan", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Distorsi sensori", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Perilaku halusinasi", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Menarik diri", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Melamun", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Curiga", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Mondar-mandir", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Respon sesuai stimulus", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Konsentrasi", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Orientasi", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
+    {
+      indicator: "Verbalisasi mendengar bisikan",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Verbalisasi melihat bayangan",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Verbalisasi merasakan sesuatu melalui indra perabaan",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Verbalisasi merasakan sesuatu melalui indra penciuman",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Verbalisasi merasakan sesuatu melalui indra pengecapan",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Distorsi sensori",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Perilaku halusinasi",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Menarik diri",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Melamun",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Curiga",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Mondar-mandir",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Respon sesuai stimulus",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Konsentrasi",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Orientasi",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
   ];
 
   for (let i = 0; i < outcome2Criteria.length; i++) {
@@ -642,7 +1007,8 @@ async function main() {
       code: "SIKI-002",
       title: "Manajemen Halusinasi",
       diagnosisId: diagnosis2.id,
-      definition: "Mengidentifikasi dan mengelola peningkatan keamanan, kenyamanan dan orientasi realita",
+      definition:
+        "Mengidentifikasi dan mengelola peningkatan keamanan, kenyamanan dan orientasi realita",
       references: JSON.stringify([
         "PPNI (2018). Standar Intervensi Keperawatan Indonesia: Definisi dan Tindakan Keperawatan, Edisi 1. Jakarta: DPP PPNI.",
       ]),
@@ -650,26 +1016,67 @@ async function main() {
   });
 
   const intervention2Actions = [
-    { type: "OBSERVATION", action: "Monitor perilaku yang mengindikasi halusinasi" },
-    { type: "OBSERVATION", action: "Monitor dan sesuaikan tingkat aktivitas dan stimulasi lingkungan" },
-    { type: "OBSERVATION", action: "Monitor isi halusinasi (mis. kekerasaan atau membahayakan diri)" },
+    {
+      type: "OBSERVATION",
+      action: "Monitor perilaku yang mengindikasi halusinasi",
+    },
+    {
+      type: "OBSERVATION",
+      action:
+        "Monitor dan sesuaikan tingkat aktivitas dan stimulasi lingkungan",
+    },
+    {
+      type: "OBSERVATION",
+      action: "Monitor isi halusinasi (mis. kekerasaan atau membahayakan diri)",
+    },
     { type: "THERAPEUTIC", action: "Pertahankan lingkungan yang aman" },
-    { type: "THERAPEUTIC", action: "Lakukan tindakan keselamatan ketika tidak dapat mengontrol perilaku (mis. limit setting, pembatasan wilayah, pengekangan fisik, seklusi)" },
-    { type: "THERAPEUTIC", action: "Diskusikan perasaan dan respon terhadap halusinasi" },
-    { type: "THERAPEUTIC", action: "Hindari perdebatan tentang validasi halusinasi" },
-    { type: "EDUCATION", action: "Anjurkan memonitor sendiri situasi terjadinya halusinasi" },
-    { type: "EDUCATION", action: "Anjurkan bicara pada orang yang dipercaya untuk memberi dukungan dan umpan balik korektif terhadap halusinasi" },
-    { type: "EDUCATION", action: "Anjurkan melakukan distraksi (mis. mendengarkan musik melakukan aktivitas dan teknik relaksasi)" },
-    { type: "EDUCATION", action: "Ajarkan pasien dan keluarga cara mengontrol halusinasi" },
-    { type: "COLLABORATION", action: "Kolaborasi pemberian obat antipsikotik dan anti ansietas Jika perlu" },
+    {
+      type: "THERAPEUTIC",
+      action:
+        "Lakukan tindakan keselamatan ketika tidak dapat mengontrol perilaku (mis. limit setting, pembatasan wilayah, pengekangan fisik, seklusi)",
+    },
+    {
+      type: "THERAPEUTIC",
+      action: "Diskusikan perasaan dan respon terhadap halusinasi",
+    },
+    {
+      type: "THERAPEUTIC",
+      action: "Hindari perdebatan tentang validasi halusinasi",
+    },
+    {
+      type: "EDUCATION",
+      action: "Anjurkan memonitor sendiri situasi terjadinya halusinasi",
+    },
+    {
+      type: "EDUCATION",
+      action:
+        "Anjurkan bicara pada orang yang dipercaya untuk memberi dukungan dan umpan balik korektif terhadap halusinasi",
+    },
+    {
+      type: "EDUCATION",
+      action:
+        "Anjurkan melakukan distraksi (mis. mendengarkan musik melakukan aktivitas dan teknik relaksasi)",
+    },
+    {
+      type: "EDUCATION",
+      action: "Ajarkan pasien dan keluarga cara mengontrol halusinasi",
+    },
+    {
+      type: "COLLABORATION",
+      action:
+        "Kolaborasi pemberian obat antipsikotik dan anti ansietas Jika perlu",
+    },
   ];
 
   for (let i = 0; i < intervention2Actions.length; i++) {
     await prisma.interventionAction.create({
-      data: { ...intervention2Actions[i], interventionId: intervention2.id, order: i },
+      data: {
+        ...intervention2Actions[i],
+        interventionId: intervention2.id,
+        order: i,
+      },
     });
   }
-
 
   // Diagnosis 3: Ansietas
   console.log("Seeding Ansietas...");
@@ -681,16 +1088,30 @@ async function main() {
       title: "Ansietas",
       category: "PSIKOLOGIS",
       subcategory: "Integritas Ego",
-      definition: "Kondisi emosi dan pengalaman subyektif individu terhadap objek yang tidak jelas dan spesifik akibat antisipasi bahaya yang memungkinkan individu melakukan tindakan untuk menghadapi ancaman",
+      definition:
+        "Kondisi emosi dan pengalaman subyektif individu terhadap objek yang tidak jelas dan spesifik akibat antisipasi bahaya yang memungkinkan individu melakukan tindakan untuk menghadapi ancaman",
       causes: JSON.stringify([
-        "Krisis situasional", "Kebutuhan tidak terpenuhi", "Krisis maturasional", "Ancaman terhadap konsep diri",
-        "Ancaman terhadap kematian", "Kekhawatiran mengalami kegagalan", "Disfungsi sistem keluarga",
-        "Hubungan orang tua-anak tidak memuaskan", "Faktor keturunan (temperamen mudah teragitasi sejak lahir)",
-        "Penyalahgunaan zat", "Terpapar bahaya lingkungan (mis. toksin, polutan, dan lain-lain)", "Kurang terpapar informasi"
+        "Krisis situasional",
+        "Kebutuhan tidak terpenuhi",
+        "Krisis maturasional",
+        "Ancaman terhadap konsep diri",
+        "Ancaman terhadap kematian",
+        "Kekhawatiran mengalami kegagalan",
+        "Disfungsi sistem keluarga",
+        "Hubungan orang tua-anak tidak memuaskan",
+        "Faktor keturunan (temperamen mudah teragitasi sejak lahir)",
+        "Penyalahgunaan zat",
+        "Terpapar bahaya lingkungan (mis. toksin, polutan, dan lain-lain)",
+        "Kurang terpapar informasi",
       ]),
       clinicalConditions: JSON.stringify([
-        "Penyakit kronis progresif (mis. kanker, penyakit autoimun)", "Penyakit akut", "Hospitalisasi",
-        "Rencana operasi", "Kondisi diagnosis penyakit belum jelas", "Penyakit neurologis", "Tahap tumbuh kembang"
+        "Penyakit kronis progresif (mis. kanker, penyakit autoimun)",
+        "Penyakit akut",
+        "Hospitalisasi",
+        "Rencana operasi",
+        "Kondisi diagnosis penyakit belum jelas",
+        "Penyakit neurologis",
+        "Tahap tumbuh kembang",
       ]),
       references: JSON.stringify([
         "PPNI (2016). Standar Diagnosis Keperawatan Indonesia: Definisi dan Indikator Diagnostik, Edisi 1. Jakarta: DPP PPNI.",
@@ -700,9 +1121,21 @@ async function main() {
 
   const ansietasSymptoms = [
     { type: "MAJOR", subjective: "Merasa bingung", objective: "Tanpa gelisa" },
-    { type: "MINOR", subjective: "Mengeluh pusing", objective: "Frekuensi nafas meningkat" },
-    { type: "MINOR", subjective: "Anoreksia", objective: "Frekuensi nadi meningkat" },
-    { type: "MINOR", subjective: "Palpitasi", objective: "Tekanan darah meningkat" },
+    {
+      type: "MINOR",
+      subjective: "Mengeluh pusing",
+      objective: "Frekuensi nafas meningkat",
+    },
+    {
+      type: "MINOR",
+      subjective: "Anoreksia",
+      objective: "Frekuensi nadi meningkat",
+    },
+    {
+      type: "MINOR",
+      subjective: "Palpitasi",
+      objective: "Tekanan darah meningkat",
+    },
     { type: "MINOR", subjective: "Merasa tidak berdaya", objective: "Tremor" },
     { type: "MINOR", subjective: "", objective: "Muka tampak pucat" },
     { type: "MINOR", subjective: "", objective: "Suara bergetar" },
@@ -731,7 +1164,8 @@ async function main() {
       code: "SLKI-003",
       title: "Tingkat Ansietas",
       diagnosisId: diagnosis3.id,
-      definition: "Kondisi emosi dan pengalaman subjektif terhadap objek yang tidak jelas dan spesifik akibat antisipasi bahaya yang memungkinkan individu melakukan tindakan untuk menghadapi ancaman",
+      definition:
+        "Kondisi emosi dan pengalaman subjektif terhadap objek yang tidak jelas dan spesifik akibat antisipasi bahaya yang memungkinkan individu melakukan tindakan untuk menghadapi ancaman",
       expectation: "MENURUN",
       references: JSON.stringify([
         "PPNI (2018). Standar Luaran Keperawatan Indonesia: Definisi dan Kriteria Hasil Keperawatan, Edisi 1. Jakarta: DPP PPNI.",
@@ -740,23 +1174,159 @@ async function main() {
   });
 
   const outcome3Criteria = [
-    { indicator: "Verbalisasi kebingungan", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Verbalisasi khawatir akibat kondisi yang dihadapi", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Perilaku gelilsah", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Perilaku tegang", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Keluhan pusing", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Anoreksia", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Palpitasi", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Diaforesis", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Tremor", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Pucat", scaleType: "meningkat", score1: "Meningkat", score2: "Cukup Meningkat", score3: "Sedang", score4: "Cukup Menurun", score5: "Menurun" },
-    { indicator: "Pola tidur", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Frekuensi pernapasan", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Frekuensi nadi", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Tekanan darah", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Kontak mata", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Pola berkemih", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
-    { indicator: "Orientasi", scaleType: "membaik", score1: "Memburuk", score2: "Cukup Memburuk", score3: "Sedang", score4: "Cukup Membaik", score5: "Membaik" },
+    {
+      indicator: "Verbalisasi kebingungan",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Verbalisasi khawatir akibat kondisi yang dihadapi",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Perilaku gelilsah",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Perilaku tegang",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Keluhan pusing",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Anoreksia",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Palpitasi",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Diaforesis",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Tremor",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Pucat",
+      scaleType: "meningkat",
+      score1: "Meningkat",
+      score2: "Cukup Meningkat",
+      score3: "Sedang",
+      score4: "Cukup Menurun",
+      score5: "Menurun",
+    },
+    {
+      indicator: "Pola tidur",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Frekuensi pernapasan",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Frekuensi nadi",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Tekanan darah",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Kontak mata",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Pola berkemih",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
+    {
+      indicator: "Orientasi",
+      scaleType: "membaik",
+      score1: "Memburuk",
+      score2: "Cukup Memburuk",
+      score3: "Sedang",
+      score4: "Cukup Membaik",
+      score5: "Membaik",
+    },
   ];
 
   for (let i = 0; i < outcome3Criteria.length; i++) {
@@ -773,7 +1343,8 @@ async function main() {
       code: "SIKI-003",
       title: "Reduksi Ansietas",
       diagnosisId: diagnosis3.id,
-      definition: "Meminimalkan kondisi individu dan pengalaman subjektif terhadap objek yang tidak jelas dan spesifik akibat antisipasi bahaya yang memungkinkan individu melakukan tindakan untuk menghadapi ancaman",
+      definition:
+        "Meminimalkan kondisi individu dan pengalaman subjektif terhadap objek yang tidak jelas dan spesifik akibat antisipasi bahaya yang memungkinkan individu melakukan tindakan untuk menghadapi ancaman",
       references: JSON.stringify([
         "PPNI (2018). Standar Intervensi Keperawatan Indonesia: Definisi dan Tindakan Keperawatan, Edisi 1. Jakarta: DPP PPNI.",
       ]),
@@ -781,39 +1352,98 @@ async function main() {
   });
 
   const intervention3Actions = [
-    { type: "OBSERVATION", action: "Identifikasi saat tingkat ansietas berubah (mis. kondisi, waktu, stressor)" },
-    { type: "OBSERVATION", action: "Identifikasi kemampuan mengambil keputusan" },
-    { type: "OBSERVATION", action: "Monitor tanda-tanda ansietas (verbal dan nonverbal)" },
-    { type: "THERAPEUTIC", action: "Ciptakan suasana terapeutik untuk menumbuhkan kepercayaan" },
-    { type: "THERAPEUTIC", action: "Temani pasien untuk mengurangi kecemasan, jika memungkinkan" },
+    {
+      type: "OBSERVATION",
+      action:
+        "Identifikasi saat tingkat ansietas berubah (mis. kondisi, waktu, stressor)",
+    },
+    {
+      type: "OBSERVATION",
+      action: "Identifikasi kemampuan mengambil keputusan",
+    },
+    {
+      type: "OBSERVATION",
+      action: "Monitor tanda-tanda ansietas (verbal dan nonverbal)",
+    },
+    {
+      type: "THERAPEUTIC",
+      action: "Ciptakan suasana terapeutik untuk menumbuhkan kepercayaan",
+    },
+    {
+      type: "THERAPEUTIC",
+      action: "Temani pasien untuk mengurangi kecemasan, jika memungkinkan",
+    },
     { type: "THERAPEUTIC", action: "Pahami situasi yang membuat ansietas" },
     { type: "THERAPEUTIC", action: "Dengarkan dengan penuh perhatian" },
-    { type: "THERAPEUTIC", action: "Gunakan pendekatan yang tenang dan meyakinkan" },
-    { type: "THERAPEUTIC", action: "Tempatkan barang pribadi yang memberikan kenyamanan" },
-    { type: "THERAPEUTIC", action: "Motivasi mengidentifikasi situasi yang memicu kecemasan" },
-    { type: "THERAPEUTIC", action: "Diskusikan perencanaan realistis tentang peristiwa yang akan datang" },
-    { type: "EDUCATION", action: "Jelaskan prosedur, termasuk sensasi yang mungkin dialami" },
-    { type: "EDUCATION", action: "Informasikan secara faktual mengenai diagnosis, pengobatan, dan prognosis" },
-    { type: "EDUCATION", action: "Anjurkan keluarga untuk tetap bersama pasien, Jika perlu" },
-    { type: "EDUCATION", action: "Anjurkan melakukan kegiatan yang tidak kompetitif, sesuai kebutuhan" },
-    { type: "EDUCATION", action: "Anjurkan mengungkapkan perasaan dan persepsi" },
-    { type: "EDUCATION", action: "Latih kegiatan pengelihatan untuk mengurangi ketegangan" },
-    { type: "EDUCATION", action: "Latih penggunaan mekanisme pertahanan diri yang tepat" },
+    {
+      type: "THERAPEUTIC",
+      action: "Gunakan pendekatan yang tenang dan meyakinkan",
+    },
+    {
+      type: "THERAPEUTIC",
+      action: "Tempatkan barang pribadi yang memberikan kenyamanan",
+    },
+    {
+      type: "THERAPEUTIC",
+      action: "Motivasi mengidentifikasi situasi yang memicu kecemasan",
+    },
+    {
+      type: "THERAPEUTIC",
+      action:
+        "Diskusikan perencanaan realistis tentang peristiwa yang akan datang",
+    },
+    {
+      type: "EDUCATION",
+      action: "Jelaskan prosedur, termasuk sensasi yang mungkin dialami",
+    },
+    {
+      type: "EDUCATION",
+      action:
+        "Informasikan secara faktual mengenai diagnosis, pengobatan, dan prognosis",
+    },
+    {
+      type: "EDUCATION",
+      action: "Anjurkan keluarga untuk tetap bersama pasien, Jika perlu",
+    },
+    {
+      type: "EDUCATION",
+      action:
+        "Anjurkan melakukan kegiatan yang tidak kompetitif, sesuai kebutuhan",
+    },
+    {
+      type: "EDUCATION",
+      action: "Anjurkan mengungkapkan perasaan dan persepsi",
+    },
+    {
+      type: "EDUCATION",
+      action: "Latih kegiatan pengelihatan untuk mengurangi ketegangan",
+    },
+    {
+      type: "EDUCATION",
+      action: "Latih penggunaan mekanisme pertahanan diri yang tepat",
+    },
     { type: "EDUCATION", action: "Latih teknik relaksasi" },
-    { type: "COLLABORATION", action: "Kolaborasi pemberian obat antiansietas, jika perlu" },
+    {
+      type: "COLLABORATION",
+      action: "Kolaborasi pemberian obat antiansietas, jika perlu",
+    },
   ];
 
   for (let i = 0; i < intervention3Actions.length; i++) {
     await prisma.interventionAction.create({
-      data: { ...intervention3Actions[i], interventionId: intervention3.id, order: i },
+      data: {
+        ...intervention3Actions[i],
+        interventionId: intervention3.id,
+        order: i,
+      },
     });
   }
 
   console.log("\nSeed completed successfully!");
   console.log("\nLogin credentials:");
-  console.log("Admin: admin@ratival.com / admin123");
-  console.log("Nurse: perawat@ratival.com / nurse123");
-  console.log("Patient: pasien@ratival.com / patient123");
+  console.log("Admin: admin@gmail.com / admin123");
+  console.log("Nurse: perawat@gmail.com / nurse123");
+  console.log("Patient: pasien@gmail.com / patient123");
 }
 
 main()
