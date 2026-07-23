@@ -7,8 +7,10 @@ import { z } from "zod";
 const SESSION_COOKIE_NAME = "session_id";
 
 const patientScreeningSchema = z.object({
-  instrument: z.enum(["GAD7", "PHQ9", "SRQ20"], {
-    message: "Jenis skrining diperlukan",
+  instrument: z.string({
+    required_error: "Jenis skrining diperlukan",
+  }).refine((val) => ["GAD7", "PHQ9", "SRQ20"].includes(val), {
+    message: "Jenis skrining harus GAD7, PHQ9, atau SRQ20",
   }),
   answers: z
     .array(
