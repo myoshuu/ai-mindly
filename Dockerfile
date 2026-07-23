@@ -21,11 +21,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma Client (crucial: output must generate before next build)
-ENV PRISMA_CLI_BINARY_TARGETS=debian-openssl-3.0.x
+# ENV PRISMA_CLI_BINARY_TARGETS=debian-openssl-3.0.x
 RUN bunx prisma generate
 
 # Build Next.js
-ENV NEXT_TELEMETRY_DISABLED=1
+# ENV NEXT_TELEMETRY_DISABLED=1
 # A placeholder DB URL so static generation doesn't fail during build time
 ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 RUN bun run build
