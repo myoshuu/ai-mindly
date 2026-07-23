@@ -17,7 +17,9 @@ RUN bun install --frozen-lockfile
 # ----------------------
 FROM base AS builder
 ARG DATABASE_URL
+ARG ANTHROPIC_API_KEY
 ENV DATABASE_URL=$DATABASE_URL
+ENV ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -32,7 +34,9 @@ FROM base AS runner
 ENV NODE_ENV=production
 ENV PORT=3000
 ARG DATABASE_URL
+ARG ANTHROPIC_API_KEY
 ENV DATABASE_URL=$DATABASE_URL
+ENV ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next/standalone ./
