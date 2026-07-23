@@ -1,11 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -25,9 +23,16 @@ enum Gender {
 
 enum QuestionCategory {
   ANXIETY
-  STRESS
+  DEPRESSION
   PHYSICAL
   IMPACT
+  GENERAL
+}
+
+enum QuestionInstrument {
+  GAD7   // Generalized Anxiety Disorder - 7 items
+  PHQ9   // Patient Health Questionnaire - 9 items
+  SRQ20  // Self Reporting Questionnaire - 20 items
 }
 
 enum SymptomType {
@@ -46,131 +51,382 @@ enum ScreeningStatus {
 }
 
 enum RiskLevel {
-  LOW
+  NONE
+  MINIMAL
+  MILD
   MODERATE
+  SEVERE
   HIGH
 }
 
+enum DiagnosisCategory {
+  PSIKOLOGIS
+  FISIOLOGIS
+  KEBUTUHAN_DASAR
+  KEHAMILAN
+  KOMUNITAS
+}
+
+enum ActionType {
+  OBSERVATION
+  THERAPEUTIC
+  EDUCATION
+  COLLABORATION
+}
+
+enum OutcomeExpectation {
+  MENINGKAT  // For outcomes that should improve (score goes up)
+  MENURUN    // For outcomes that should decrease (score goes down)
+  MEMBAIK    // For outcomes measured as getting better (score goes up)
+  MEMBURUK   // For outcomes measured as getting worse (score goes down)
+}
+
+enum ValidationDecision {
+  APPROVED
+  REVISED
+  REJECTED
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCED
+  FAILED
+}
+
+// ============================================================
+// USER & AUTH
+// ============================================================
+
 model User {
-  id       String @id @default(cuid())
-  email    String @unique
-  password String
-  role     Role
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role
+  fullName  String
+  nip       String?  @unique  // Nurse ID number
+  phone     String?
+  isActive  Boolean  @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   patients         Patient[]
   nurseValidations NurseValidation[]
+  notifications    Notification[]
+  simrsSync        SIMRSSync[]
+
+  @@map("users")
 }
 
 model Patient {
   id               String   @id @default(cuid())
-  nik              String
+  nik              String   @unique
   fullName         String
   gender           Gender
   birthDate        DateTime
   phone            String
   address          String
   emergencyContact String?
+  emergencyPhone   String?
+  medicalHistory   String?  // JSON string of medical history
+  familyContactName String?
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId     String @unique
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   screenings Screening[]
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  @@map("patients")
 }
 
 model Question {
-  id          Int              @id
-  question    String
-  category    QuestionCategory
-  symptomType SymptomType
-  order       Int
+  id           Int                @id
+  text         String
+  instrument   QuestionInstrument
+  category     QuestionCategory
+  symptomType  SymptomType?
+  order        Int
+  scaleMin     Int                @default(0)
+  scaleMax     Int                @default(4)
+  scaleLabels  String             // JSON array of scale labels
+  helpText     String?
 
   answers ScreeningAnswer[]
+
+  @@map("questions")
 }
 
 model Screening {
-  id String @id @default(cuid())
-
-  status     ScreeningStatus
-  answers    ScreeningAnswer[]
-  ai         AIAnalysis?
-  validation NurseValidation?
+  id        String   @id @default(cuid())
+  status    ScreeningStatus @default(DRAFT)
+  notes     String?
+  instrument QuestionInstrument?  // The screening type used: GAD7, PHQ9, or SRQ20
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   patientId String
-  patient   Patient @relation(fields: [patientId], references: [id])
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  answers        ScreeningAnswer[]
+  ai             AIAnalysis?
+  validation     NurseValidation?
+  diagnoses      ScreeningDiagnosis[]
+  simrsSync      SIMRSSync[]
+
+  @@map("screenings")
 }
 
 model ScreeningAnswer {
-  id    String @id @default(cuid())
-  score Int
+  id       String  @id @default(cuid())
+  score    Int     // The answer value (0-scaleMax)
+  notes    String? // Optional nurse notes during validation
 
   screeningId String
-  questionId  Int
-  screening   Screening @relation(fields: [screeningId], references: [id])
-  question    Question  @relation(fields: [questionId], references: [id])
+  questionId Int
+  screening  Screening @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+  question   Question  @relation(fields: [questionId], references: [id])
+
+  @@unique([screeningId, questionId])
+  @@map("screening_answers")
 }
 
 model AIAnalysis {
-  id              String    @id @default(cuid())
-  totalScore      Int
-  confidence      Float
-  riskLevel       RiskLevel
-  summary         String
-  reasoning       String
-  majorSymptoms   Json
-  minorSymptoms   Json
-  possibleCauses  Json
-  recommendations Json
+  id                     String    @id @default(cuid())
+  totalScore             Int
+  confidence             Float     // 0.0 - 1.0
+  riskLevel              RiskLevel
+  category               String    // e.g. "Minimal Anxiety", "Severe Depression"
+  summary                String
+  reasoning              String    // AI's reasoning for the prediction
+  majorSymptoms          String    // JSON array
+  minorSymptoms          String    // JSON array
+  possibleCauses         String    // JSON array
+  recommendations        String    // JSON array
+  recommendedDiagnoses   String    // JSON array of diagnosis IDs
+  emergencyFlags         String    // JSON array of flags
 
   createdAt DateTime @default(now())
 
   screeningId String    @unique
-  screening   Screening @relation(fields: [screeningId], references: [id])
+  screening   Screening @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+
+  @@map("ai_analyses")
 }
 
 model NurseValidation {
   id          String   @id @default(cuid())
-  approved    Boolean
+  decision    ValidationDecision
   notes       String?
+  revisedRiskLevel  RiskLevel?
+  revisedCategory   String?
+  revisedScore      Int?
+
   validatedAt DateTime @default(now())
 
   screeningId String    @unique
-  nurseId     String
-  screening   Screening @relation(fields: [screeningId], references: [id])
-  nurse       User      @relation(fields: [nurseId], references: [id])
+  screening   Screening @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+
+  nurseId String
+  nurse   User   @relation(fields: [nurseId], references: [id])
+
+  @@map("nurse_validations")
 }
 
-//  SDKI
 model Diagnosis {
-  id           String @id @default(cuid())
-  screeeningId String
-  code         String
-  title        String
-  description  String
+  id                 String            @id @default(cuid())
+  code               String            @unique  // e.g. "SDKI-001"
+  title              String
+  category           DiagnosisCategory
+  subcategory        String            // e.g. "Integritas Ego"
+  definition         String
+  causes             String            // JSON array
+  clinicalConditions String            // JSON array
+  references         String            // JSON array
+  priority           Int               @default(0)
+  isActive           Boolean           @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  symptoms        Symptom[]
+  outcomes        Outcome[]
+  interventions   Intervention[]
+  screeningDiag   ScreeningDiagnosis[]
+
+  @@map("diagnoses")
 }
 
-// SLKI
-model Outcome {
-  id          String @id @default(cuid())
-  diangosisId String
-  title       String
-  target      String
-}
+model Symptom {
+  id           String     @id @default(cuid())
+  type         SymptomType
+  subjective   String     // Subjective sign/indicator
+  objective    String     // Objective sign/indicator
+  order        Int        @default(0)
 
-// SIKI
-model Intervention {
-  id          String @id @default(cuid())
   diagnosisId String
-  title       String
-  action      String
+  diagnosis   Diagnosis @relation(fields: [diagnosisId], references: [id], onDelete: Cascade)
+
+  @@map("symptoms")
+}
+
+model Outcome {
+  id           String             @id @default(cuid())
+  code         String             @unique  // e.g. "SLKI-001"
+  title        String
+  definition   String
+  expectation  OutcomeExpectation // MENINGKAT, MENURUN, MEMBAIK, MEMBURUK
+  references   String             // JSON array
+
+  diagnosisId String
+  diagnosis   Diagnosis @relation(fields: [diagnosisId], references: [id], onDelete: Cascade)
+
+  criteria OutcomeCriterion[]
+  screeningOutcomes ScreeningOutcome[]
+
+  @@map("outcomes")
+}
+
+model OutcomeCriterion {
+  id        String  @id @default(cuid())
+  indicator String  // e.g. "Verbalisasi kebingungan"
+  scaleType String  // "meningkat" (1-5) or "membaik" (1-5)
+  score1    String  // e.g. "Meningkat" or "Memburuk"
+  score2    String  // e.g. "Cukup Meningkat" or "Cukup Memburuk"
+  score3    String  // e.g. "Sedang"
+  score4    String  // e.g. "Cukup Menurun" or "Cukup Membaik"
+  score5    String  // e.g. "Menurun" or "Membaik"
+  order     Int     @default(0)
+
+  outcomeId String
+  outcome   Outcome @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+
+  @@map("outcome_criteria")
+}
+
+model Intervention {
+  id         String   @id @default(cuid())
+  code       String   @unique  // e.g. "SIKI-001"
+  title      String
+  definition String
+  references String   // JSON array
+
+  diagnosisId String
+  diagnosis   Diagnosis @relation(fields: [diagnosisId], references: [id], onDelete: Cascade)
+
+  actions               InterventionAction[]
+  screeningInterventions ScreeningIntervention[]
+
+  @@map("interventions")
+}
+
+model InterventionAction {
+  id       String     @id @default(cuid())
+  type     ActionType
+  action   String
+  order    Int        @default(0)
+
+  interventionId String
+  intervention   Intervention @relation(fields: [interventionId], references: [id], onDelete: Cascade)
+
+  @@map("intervention_actions")
+}
+
+model ScreeningDiagnosis {
+  id       String  @id @default(cuid())
+  priority Int     @default(1)  // 1 = primary diagnosis
+  notes    String?
+
+  screeningId String
+  diagnosisId String
+  screening   Screening @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+  diagnosis   Diagnosis @relation(fields: [diagnosisId], references: [id])
+
+  outcomes      ScreeningOutcome[]
+  interventions ScreeningIntervention[]
+
+  @@unique([screeningId, diagnosisId])
+  @@map("screening_diagnoses")
+}
+
+model ScreeningOutcome {
+  id           String  @id @default(cuid())
+  targetScore  Int     @default(5)  // Target score (1-5)
+  currentScore Int?                // Current progress score
+  notes        String?
+
+  screeningDiagnosisId String
+  outcomeId            String
+
+  screeningDiagnosis ScreeningDiagnosis @relation(fields: [screeningDiagnosisId], references: [id], onDelete: Cascade)
+  outcome           Outcome           @relation(fields: [outcomeId], references: [id])
+
+  @@unique([screeningDiagnosisId, outcomeId])
+  @@map("screening_outcomes")
+}
+
+model ScreeningIntervention {
+  id          String    @id @default(cuid())
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  notes       String?
+
+  screeningDiagnosisId String
+  interventionId       String
+
+  screeningDiagnosis ScreeningDiagnosis @relation(fields: [screeningDiagnosisId], references: [id], onDelete: Cascade)
+  intervention       Intervention     @relation(fields: [interventionId], references: [id])
+
+  @@unique([screeningDiagnosisId, interventionId])
+  @@map("screening_interventions")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  type      String   // "NEW_PATIENT", "VALIDATION_PENDING", "HIGH_RISK", "REPORT_READY"
+  isRead    Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model SIMRSSync {
+  id           String     @id @default(cuid())
+  entityType   String     // "PATIENT", "SCREENING", "DIAGNOSIS", "REPORT"
+  entityId     String
+  syncStatus   SyncStatus @default(PENDING)
+  syncedAt     DateTime?
+  errorMessage String?
+  metadata     String?    // JSON for additional sync data
+
+  createdAt DateTime @default(now())
+
+  userId     String?
+  screeningId String?
+
+  user     User?     @relation(fields: [userId], references: [id])
+  screening Screening? @relation(fields: [screeningId], references: [id])
+
+  @@map("simrs_sync")
 }
 
 model Report {
   id          String   @id @default(cuid())
-  screeningId String
-  generatedAt DateTime
+  title       String
+  type        String   // "SCREENING", "DIAGNOSIS", "INTERVENTION", "MONTHLY", "YEARLY"
+  filters     String   // JSON of applied filters
+  generatedBy String
+  fileUrl     String?
+
+  generatedAt DateTime @default(now())
+
+  @@map("reports")
 }
