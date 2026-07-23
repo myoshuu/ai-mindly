@@ -33,7 +33,7 @@ export const patientSchema = z.object({
 export const createScreeningSchema = z.object({
   patientId: z.string().min(1, "ID pasien diperlukan"),
   instrument: z.enum(["GAD7", "PHQ9", "SRQ20"], {
-    required_error: "Jenis skrining diperlukan",
+    message: "Jenis skrining diperlukan",
   }),
   answers: z
     .array(

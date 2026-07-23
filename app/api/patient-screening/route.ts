@@ -8,7 +8,7 @@ const SESSION_COOKIE_NAME = "session_id";
 
 const patientScreeningSchema = z.object({
   instrument: z.string({
-    required_error: "Jenis skrining diperlukan",
+    message: "Jenis skrining diperlukan",
   }).refine((val) => ["GAD7", "PHQ9", "SRQ20"].includes(val), {
     message: "Jenis skrining harus GAD7, PHQ9, atau SRQ20",
   }),
