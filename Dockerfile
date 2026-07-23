@@ -9,7 +9,6 @@ RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists
 # 2. Dependencies
 # ----------------------
 FROM base AS deps
-ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile
 
@@ -17,7 +16,8 @@ RUN bun install --frozen-lockfile
 # 3. Builder
 # ----------------------
 FROM base AS builder
-ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -31,6 +31,8 @@ RUN bun run build
 FROM base AS runner
 ENV NODE_ENV=production
 ENV PORT=3000
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next/standalone ./
